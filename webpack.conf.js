@@ -1,7 +1,6 @@
 const path = require('path')
 const HTMLPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-const {VueLoaderPlugin} = require('vue-loader')
 
 const isDev = process.env.NODE_ENV == 'development'
 
@@ -55,8 +54,7 @@ const config = {
                 NODE_DEV: isDev ? '"development"' : '"production"'
             }
         }),
-        new HTMLPlugin(),
-        new VueLoaderPlugin()
+        new HTMLPlugin()
     ]
 }
 
