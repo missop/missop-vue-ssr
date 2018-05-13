@@ -14,10 +14,10 @@ const config = {
     },
     module: {
         rules: [
-             {
-                 test:/\.vue/,
-                 loader:'vue-loader'
-             },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            },
             {
                 test: /\.css$/,
                 use: [
@@ -26,12 +26,16 @@ const config = {
                 ]
             },
             {
-                test: /\.less/,
+                test: /\.less$/,
                 use: [
                     'style-loader',
                     'css-loader',
                     'less-loader'
                 ]
+            },
+            {
+                test: /\.jsx/,
+                loader: 'babel-loader'
             },
             {
                 test: /\.(jpg|jpeg|png|gif|svg)$/,

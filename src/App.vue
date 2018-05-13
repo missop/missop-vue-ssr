@@ -1,25 +1,42 @@
 <template>
     <div id="app">
-        <ul>
-            <li><img src="../assets/img/1918606_190013_2_lit.jpg" alt=""></li>
-            <li><img src="../assets/img/1918606_190013_2_lit.jpg" alt=""></li>
-        </ul>
+        <div id="cover"></div>
+        <v-header></v-header>
+        <Todo></Todo>
+        <v-footer></v-footer>
     </div>
 </template>
 
 <script>
+    import vHeader from './todo/header.vue';
+    import vFooter from './todo/footer.jsx'
+    import Todo from './todo/todo.vue'
     export default {
-        name: "App",
-        data() {
-            return {
-                text: '第一次使用vue'
-            }
+        components:{
+            vHeader,
+            vFooter,
+            Todo
         }
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
     #app {
-        color: red;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    #cover {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #999;
+        opacity: .9;
+        z-index: -1;
     }
 </style>

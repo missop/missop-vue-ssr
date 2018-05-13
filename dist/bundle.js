@@ -128,7 +128,7 @@ module.exports = __webpack_require__.p + "1918606_190013_2_lit-aaa.jpg";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__App_vue__ = __webpack_require__(8);
-throw new Error("Cannot find module \"../assets/css/test.less\"");
+throw new Error("Cannot find module \"../assets/styles/test.less\"");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__assets_img_1918606_190013_2_lit_jpg__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__assets_img_1918606_190013_2_lit_jpg___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__assets_img_1918606_190013_2_lit_jpg__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assets_img_1918606_190049_1_lit_jpg__ = __webpack_require__(16);
@@ -8684,7 +8684,7 @@ var Component = Object(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
+// style-loader: Adds some styles to the DOM by adding a <style> tag
 
 // load the styles
 var content = __webpack_require__(10);
@@ -8716,11 +8716,11 @@ exports.push([module.i, "#app[data-v-5e098969]{color:red}", ""]);
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
 */
-// css base code, injected by the css-loader
+// styles base code, injected by the styles-loader
 module.exports = function(useSourceMap) {
 	var list = [];
 
-	// return the list of modules as css string
+	// return the list of modules as styles string
 	list.toString = function toString() {
 		return this.map(function (item) {
 			var content = cssWithMappingToString(item, useSourceMap);
@@ -8823,7 +8823,7 @@ type StyleObject = {
 }
 
 type StyleObjectPart = {
-  css: string;
+  styles: string;
   media: string;
   sourceMap: ?string
 }
@@ -8910,7 +8910,7 @@ function addStylesToDom (styles /* Array<StyleObject> */) {
 
 function createStyleElement () {
   var styleElement = document.createElement('style')
-  styleElement.type = 'text/css'
+  styleElement.type = 'text/styles'
   head.appendChild(styleElement)
   return styleElement
 }
@@ -9029,7 +9029,7 @@ function applyToTag (styleElement, obj) {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = listToStyles;
 /**
- * Translates the list format produced by css-loader into something
+ * Translates the list format produced by styles-loader into something
  * easier to manipulate.
  */
 function listToStyles (parentId, list) {
