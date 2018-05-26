@@ -1,3 +1,5 @@
+vue-todo基础
+--
 ##武器一阶：webpack的打包配置
 1. webpack打包分为entry、output、module三个部分，难点主要在于module部分，最重要的是它要把
 vue解析成浏览器能够识别的html展示出来，而使用vue-loader会报以下错误：(vue-loader v15版本以上)<br>
@@ -38,4 +40,37 @@ callback=function(element,index,array){}
 
 ##汇总
 config.entry=>config.output.filename=>config.module.rules=>config.plugins
+
+
+
+vue-ssr进阶
+--
+##武器三阶 修改webpack配置
+1. webpack的配置全部放在build文件下,
+分为:<br>webpack.config.base.js:相当于common，都要引的文件<br>
+webpack.config.client.js:开发环境和生产环境运行时的配置
+2. 合体:webpack-merge，能够把当前写的配置和base融合起来
+3. 修改文件目录：公用的组件放到todo外面，核心组件放到todo里面
+
+##武器四阶 vueloader配置
+1. `preserveWhitespace: true,`=>vue解析时去掉空格
+2. `extractCSS: isDev,`=>vue中的css单独打包
+3. ` /*loaders:{
+                'docs':docsLoader
+            },
+            preLoaders:{},
+            postLoaders:{},*/`
+            了解
+4. client:`{
+                                loader: 'css-loader',
+                                options:{
+                                    module:true,
+                                    localIndentName: isDev ? '[hash:base64:5]' : '[path].[name].[hash:base64:5]',
+                                }
+                            }`<br>
+vueloader:`cssModules: {
+                                         localIndentName: isDev ? '[hash:base64:5]' : '[path].[name].[hash:base64:5]',
+                                         camelCase: true
+}`
+
 

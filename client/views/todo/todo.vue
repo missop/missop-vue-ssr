@@ -20,50 +20,50 @@
     import Tabs from './tables.vue'
     import Item from './item.vue'
 
-    let id = 0;
-    export default {
-        data() {
-            return {
-                todos: [],
-                filter: 'All'
-            }
-        },
-        computed: {
-            filteredTodos() {
-                if (this.filter == 'All') {
-                    return this.todos;
-                } else if (this.filter == 'completed') {
-                    return this.todos.filter(todo => todo.completed);
-                }
-            }
-        },
-        methods: {
-            addTodo(e) {
-                const content = e.target.value.trim();
-                if (!content) {
-                    return;
-                }
-                this.todos.unshift({
-                    id: id++,
-                    content: content,
-                    completed: false
-                });
-                e.target.value = '';
-            },
-            deleteTodo(id) {
-                this.todos.splice(this.todos.findIndex(todo => todo.id === id), 1);
-            },
-            getFilter(filter) {
-                this.filter = filter;
-            },
-            clearCompleted() {
-                this.todos = this.todos.filter(todo => !todo.completed);
-            }
-        },
-        components: {
-            Tabs,
-            Item
+    let id = 0
+export default {
+      data () {
+        return {
+          todos: [],
+          filter: 'All'
         }
+      },
+      computed: {
+        filteredTodos () {
+          if (this.filter === 'All') {
+            return this.todos
+          } else if (this.filter === 'completed') {
+            return this.todos.filter(todo => todo.completed)
+          }
+        }
+      },
+      methods: {
+        addTodo (e) {
+          const content = e.target.value.trim()
+          if (!content) {
+            return
+          }
+          this.todos.unshift({
+            id: id++,
+            content: content,
+            completed: false
+          })
+          e.target.value = ''
+        },
+        deleteTodo (id) {
+          this.todos.splice(this.todos.findIndex(todo => todo.id === id), 1)
+        },
+        getFilter (filter) {
+          this.filter = filter
+        },
+        clearCompleted () {
+          this.todos = this.todos.filter(todo => !todo.completed)
+        }
+      },
+      components: {
+        Tabs,
+        Item
+      }
     }
 </script>
 

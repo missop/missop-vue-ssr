@@ -21,31 +21,31 @@
 
 <script>
     export default {
-        props: {
-            itemsLeft: {
-                type: Number,
-                required: true
-            }
-        },
-        data() {
-            return {
-                states: [
-                    'All',
-                    'active',
-                    'completed'
-                ],
-                filter: 'All'
-            }
-        },
-        methods: {
-            toggleFilter(state) {
-                this.filter = state;
-                this.$emit('pull', state)
-            },
-            clearAllCompleted() {
-                this.$emit('clear');
-            }
+      props: {
+        itemsLeft: {
+          type: Number,
+          required: true
         }
+      },
+      data () {
+        return {
+          states: [
+            'All',
+            'active',
+            'completed'
+          ],
+          filter: 'All'
+        }
+      },
+      methods: {
+        toggleFilter (state) {
+          this.filter = state
+          this.$emit('pull', state)
+        },
+        clearAllCompleted () {
+          this.$emit('clear')
+        }
+      }
     }
 </script>
 
