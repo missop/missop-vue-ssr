@@ -23,7 +23,9 @@ const defaultPlugins = [
             NODE_DEV: isDev ? '"development"' : '"production"'
         }
     }),
-    new HTMLPlugin()
+    new HTMLPlugin({
+        template: path.join(__dirname, 'template.html')
+    })
 ]
 
 if (isDev) {
@@ -32,11 +34,11 @@ if (isDev) {
         module: {
             rules: [
                 {
-                    test:/\.(vue|js|jsx)$/,
-                    loader:'eslint-loader',
-                    exclude:/node_modules/,
+                    test: /\.(vue|js|jsx)$/,
+                    loader: 'eslint-loader',
+                    exclude: /node_modules/,
                     /*在文件加载之前进行预处理*/
-                    enforce:'pre'
+                    enforce: 'pre'
                 },
                 {
                     test: /\.less$/,
@@ -55,10 +57,12 @@ if (isDev) {
             ]
         },
         devServer,
-        plugins: [
-            new webpack.HotModuleReplacementPlugin(),
-            new webpack.NoEmitOnErrorsPlugin()
-        ]
+        plugins: defaultPlugins.concat(
+            [
+                new webpack.HotModuleReplacementPlugin(),
+                new webpack.NoEmitOnErrorsPlugin()
+            ]
+        )
     })
 } else {
     config = merge(baseConfig, {

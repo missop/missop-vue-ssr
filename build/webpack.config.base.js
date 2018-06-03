@@ -15,8 +15,8 @@ const config = {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue-loader',
-                options:createVueLoaderOptions(isDev)
+                loader: 'vue-loader'
+                // options:createVueLoaderOptions(isDev)
             },
             {
                 test: /\.jsx/,
