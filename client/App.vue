@@ -2,8 +2,10 @@
     <div id="app">
         <div id="cover"></div>
         <v-header></v-header>
-        <Todo></Todo>
+        <router-link to="/app/a">app</router-link>
+        <router-view />
         <v-footer></v-footer>
+        <router-view name="a" />
     </div>
 </template>
 

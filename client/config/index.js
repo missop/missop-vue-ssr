@@ -4,6 +4,14 @@ import routes from './routes'
 
 export default () => {
   return new Router({
-    routes
+    routes,
+    mode: 'history',
+    scrollBehavior (to, from, savedPosition) {
+    },
+    parseQuery () {
+    },
+    stringifyQuery () {
+    },
+    fallback: true
   })
 }

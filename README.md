@@ -188,6 +188,24 @@ render () {
 `
 
 ## vue-router
+1. 三个文件
+<br>index.js 实例化vue-router（引入路由配置routes为对象属性）
+<br>小技巧:实例化的时候使用函数，每次都创建一个新的router
+<br>routes.js 配置路由
+<br>main.js 入口文件，引入vue-router插件(Vue.use())和配置(index.js)
+2. vue-router配置项:
+<br>`mode:'history`:vuerouter默认会加#，加上它就正常了
+<br>`base:'/base/'`:区分页面路径和常用路径，不常用
+<br>`linkActiveClass: '',linkExactActiveClass: ''`:控制全局样式名，
+router-link控制的是路由跳转(app)，而a是页面跳转(网页)
+<br>devServer识别路由:`historyApiFallback:{index:'/index.html'}`
+3. 路由路径配置项
+<br>子路由：`children:[{}]`=>`<router-view>`显示
+<br>`meta:{title:'aaa',description:'abc'}`:配置seo
+<br>`props:true`:路由参数以props值传递(推荐)
+4. 导航守卫
+babel-plugin-syntax-dynamic-import
+
 
 
 
