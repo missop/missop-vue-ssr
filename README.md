@@ -40,7 +40,8 @@ callback=function(element,index,array){}
 
 ## 汇总
 config.entry=>config.output.filename=>config.module.rules=>config.plugins
-
+### webpack配置问题
+1. /public才能打开应用，而且router-view不显示
 
 
 vue-ssr进阶
@@ -77,6 +78,8 @@ vueloader:`cssModules: {
 
 ##小知识
 1. ramrif每次打包删除dist
+2. Do not use built-in or reserved HTML elements as component id: header
+<br>组件的name属性不能设置为关键词
 
 ## 武器五阶 vue基础知识
 1. Vue实例的属性(const app=new Vue())
@@ -199,12 +202,242 @@ render () {
 <br>`linkActiveClass: '',linkExactActiveClass: ''`:控制全局样式名，
 router-link控制的是路由跳转(app)，而a是页面跳转(网页)
 <br>devServer识别路由:`historyApiFallback:{index:'/index.html'}`
+<br>contentBase:指定本地加载index的目录文件夹
 3. 路由路径配置项
 <br>子路由：`children:[{}]`=>`<router-view>`显示
 <br>`meta:{title:'aaa',description:'abc'}`:配置seo
 <br>`props:true`:路由参数以props值传递(推荐)
 4. 导航守卫
-babel-plugin-syntax-dynamic-import
+<br>main.js中的路由钩子
+<br>beforeEach:
+`router.beforeEach((to, from, next) => {
+  console.log('beforeEach invoked')
+  next()
+})`
+<br>
+beforeResolve:
+`router.beforeResolve((to, from, next) => {
+  console.log('beforeResolve invoked')
+  next()
+})`
+<br>
+afterEach(跳转之后的)
+`router.afterEach((to, from) => {
+  console.log('afterEach invoked')
+})`
+<br>组件中的路由钩子
+<br>beforeRouteEnter：想在这里修改实例上的数据必须在next回调里面用vm表示
+`beforeRouteEnter (to, form, next) {
+  console.log('todo before enter')
+  next(vm => {
+    console.log('after enter vm.id is ' + vm.id)
+  })
+},`
+<br>
+beforeRouteUpdate:路由跳转时mounted不再执行，但这个函数会执行，可修改实例
+`beforeRouteUpdate (to, form, next) {
+  console.log('todo route update')
+  next()
+},`
+<br>
+beforeRouteLeave:在跳转之前的确认
+`beforeRouteLeave (to, form, next) {
+  console.log('before route enter')
+  if (global.confirm('are you sure to leave?')) {
+    next()
+  }
+}`
+5. 异步导航加载文件
+<br>安装babel-plugin-syntax-dynamic-import插件
+<br>路由设置组件的时候`component:()=>import ''`这样仅加载当前路由资源
+6. 在地址栏后面默认加上undefined:
+<br>罪魁祸首:` scrollBehavior (to, from, savedPosition) {
+              },
+              parseQuery () {
+              },
+              stringifyQuery () {
+              },`
+<br>其中scrollBehavior：控制跳转之后是否滚动到顶部，还是停留在当前位置
+<br>另外两个则是处理查询参数的 
+7. 路由参数
+<br>/app/:page(page为路由参数)
+<br>带路由参数的页面为什么刷新后白屏？
+<br> 
+8. 总结:地址栏由两个因素决定：
+<br>contentBase+historyApiFallbackju决定本地服务器加载的资源所在地址 
+<br>路由决定        
+
+
+## vuex
+1. npm i -s vuex
+2. state.js=>data getters.js=>computed mutations=>methods
+3. `this.$store.state.count`用$store对象来查找数据和方法显然太麻烦
+<br>...mapState(['count'])
+<br>先安装`npm i babel-preset-stage-1 -d`=>babelrc的presets中添加一个stage-1
+4. getters=>computed 
+5. mutations=>同步操作 只接受两个参数(state,{})
+<br>actions=>异步操作(最终都要执行mutations) 
+6. `App.vue?26cd:28 Uncaught TypeError: (0 , _vuex2.default) is not a function`<br>
+`import {mapState} from 'vuex'`这里引入mapState要用对象的形式引入
+7. 模块(modules)
+<br>state:需要用命名空间modulesName来访问 ...mapState({textA:state=>state.modulesName.text})
+<br>mutations:默认是在全局下(namespaced:true加上之后才需要属于此命名空间) ...mapMutations(['modulesName/updateText']) this['modulesName/updateText']
+<br>getters:与mutations在命名空间上是一样的,接收三个参数state, getters, rootState
+<br>actions:接收三个参数{ state, actions, rootState } 注意：actions的参数为对象
+8. 注册模块
+<br>store.registerModule('c'，{ state: { 'text': 123 } })
+9. vuex的热加载
+<br>输出的时候需要定义store变量
+<br>
+<pre>
+if (module.hot) {
+         module.hot.accept([
+           './state/state',
+           './mutations/mutations',
+           './actions/actions',
+           './getters/getters'
+         ], () => {
+           const newState = require('./state/state').default
+           const newMutations = require('./mutations/mutations').default
+           const newGetters = require('./getters/getters').default
+           const newActions = require('./actions/actions').default
+           store.hotUpdate({
+             state: newState,
+             mutations: newMutations,
+             getters: newGetters,
+             actions: newActions
+           })
+         })
+       }
+</pre>
+10. 对store、actions、mutations、getters变化的监控
+<br>watch:
+<pre>
+store.watch((state) => state.count + 1, (newCount) => {
+  console.log('new count watched: ' + newCount)
+})
+</pre>
+其他:subscribe
+<pre>
+store.subscribe((mutation) => {
+    console.log(mutation.type)
+    console.log(mutation.payload)
+})
+</pre>
+
+vue知识提升（重难点）
+--
+## vue-ssr
+#### webpack-config-server.js(配置打包)
+1. target:'node'=>打包js的执行环境为nodejs
+2. output:{libraryTarget:'commonjs2'}=>模块系统为module.exports和require(服务端)
+3. output:{filename:'....'}=>不需要浏览器缓存，所以不使用hash值
+4. devtool:'source-map'=>代码调试，提示出错在哪一行
+5. externals: Object.keys(require('../package.json').dependencies)=>没必要把依赖的vue，
+vuex等等单独打包出来，直接require即可，这里就是设置不打包这些文件
+6. vue-server-renderer=>由于本次打包输出的是json文件，并且不包含js，使用这个插件能够
+方便地操作服务端渲染
+7. 由于开发环境和生产环境的不同，需要在webpack中定义`process.env.NODE_ENV`
+
+#### server.js(报错时的处理)
+1.koa框架的使用app.use(async(ctx,next)=>{})
+
+#### dev-ssr.js(开发环境服务端渲染,处理打包出来的文件，更新打包文件)
+1. 不能使用import（babel所支持的语法特别多，而node目前仅支持require）
+2. memory fs与fs：memory fs不会在硬盘上写入文件
+3. axios获取客户端的数据，webpack.config.client.js=>加上vue-server-renderer插件生成文件然后服务端去获取\
+4. `connect ECONNREFUSED 127.0.0.1:8000`原因是没有启动客户端服务器
+
+#### server-render.js(渲染html，插入模板)
+
+#### create-app.js(类似于mainjs初始化vue)
+
+#### error
+1. `no components matched`=>路由设置为有参数的路径，需要把参数去掉
+2. 没有根节点root，需要在模板中设置根节点，并且把模板放到root中
+
+#### utils
+1. nodemon=>自动刷新服务端代码
+2. concurrently=>一次性启动两个服务
+
+高级组件开发
+--
+## 1.1 notification组件复盘
+### 核心问题：计算每一个实例的高度，并添加动态样式，然后控制它一定时间后消失
+### 核心变量： instances(所有notice对象)、seed(notice对象的id，便于删除)
+### 生成不重复的id---添加到DOM上---计算高度---定时删除元素
+### 核心技能：使用js来扩展vue组件，删除组件
+1. 创建vue文件作为初始文件，写一些固定的样式（后面要拿这个去extends内容）
+2. ![image text](../study-pics/1.jpg)
+3. 先把它注册成全局组件：
+<br>notification.vue + index.js(Vue.component(name,Component)) + create-app.js(Vue.use(这里导入的是js文件))
+4. did you register the component correctly? For recursive components, make sure to provide the "name" option.
+<br>name属性需要和template中组件名一致
+5. transition用法复习
+```
+ fade:transition的name属性
+.fade-leave-active,
+  .fade-enter-active{
+        transition: all .3s;
+  }
+  .fade-enter,
+  .fade-leave-to{
+        opavity:0
+  }
+```
+6. Vue创建组件有几种方式？
+<br>new (Vue.entend())
+<br>new Vue()
+7. 动态的属性怎么加？
+<br>:style=style
+8. computed声明变量与data声明变量有何区别？
+<br>
+9. 所有用到的变量都要现在.vue中声明
+10. 实例化的时候传入参数(vue中接收的props)
+```
+const instance = new NotificationContructor({
+    propsData: options
+  })
+```
+11. 样式的返回
+```
+ style() {
+      return {
+        position: 'fixed',
+        right: '20px',
+        bottom: this.verticalOffset + 'px'
+      }
+    }
+```
+12.vm.$el(这个才是dom)
+```
+先要生成vm，才能调用$el
+instance.vm = instance.$mount()
+  document.body.appendChild(instance.vm.$el)
+```
+13. 解决跨域
+```
+headers: {'Access-Control-Allow-Origin': '*'},
+```
+14. 解构赋值(...要放在后面)
+```
+const {
+    autoClose,
+    ...rest
+  } = options
+
+```
+15. transition的动画完成事件
+```
+@after-leave="afterLeave"
+```
+16. 删除之后高度调整不符合预期
+<br>问题在于删除元素的高度获取上面，需要把dom上的offsetHeight赋值到vue对象上、
+<br>transition的after-enter事件的触发：如果没有显示隐藏的变化就不会触发，所以赋值不成功（visible没有变化）
+
+## 1.2 tab组件复盘
+### 核心问题： 将tab组件插入到tabs组件中，使用插槽来显示文本,tabs上的value来决定activate哪一个
+
 
 
 

@@ -6,12 +6,6 @@ export default () => {
   return new Router({
     routes,
     mode: 'history',
-    scrollBehavior (to, from, savedPosition) {
-    },
-    parseQuery () {
-    },
-    stringifyQuery () {
-    },
     fallback: true
   })
 }

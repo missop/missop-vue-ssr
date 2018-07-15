@@ -4,8 +4,9 @@ const webpack = require('webpack')
 const ExtractPlugin = require('extract-text-webpack-plugin')
 const merge = require('webpack-merge')
 const baseConfig = require('./webpack.config.base.js')
+const VueClientPlugin = require('vue-server-renderer/client-plugin')
 
-const isDev = process.env.NODE_ENV == 'development'
+const isDev = process.env.NODE_ENV === 'development'
 
 let config;
 const devServer = {
@@ -14,8 +15,9 @@ const devServer = {
   overlay: {
     errors: true
   },
+  headers: {'Access-Control-Allow-Origin': '*'},
   historyApiFallback: {
-    index: '/index.html'
+    index: '/public/index.html'
   },
   hot: true
 }
@@ -28,7 +30,8 @@ const defaultPlugins = [
   }),
   new HTMLPlugin({
     template: path.join(__dirname, 'template.html')
-  })
+  }),
+  new VueClientPlugin()
 ]
 
 if (isDev) {
@@ -36,13 +39,13 @@ if (isDev) {
     devtool: '#cheap-module-eval-source-map',
     module: {
       rules: [
-        {
+       /* {
           test: /\.(vue|js|jsx)$/,
           loader: 'eslint-loader',
           exclude: /node_modules/,
-          /*在文件加载之前进行预处理*/
+          /!*在文件加载之前进行预处理*!/
           enforce: 'pre'
-        },
+        },*/
         {
           test: /\.less$/,
           use: [
@@ -71,11 +74,12 @@ if (isDev) {
   config = merge(baseConfig, {
     // 修改入口文件把库分离出去
     entry: {
-      app: path.join(__dirname, '../client/main.js'),
+      app: path.join(__dirname, '../client/client-entry.js'),
       vendor: ['vue']
     },
     output: {
-      filename: '[name].[chunkHash:8].js'
+      filename: '[name].[chunkHash:8].js',
+      publicPath: '/public/'
     },
     // 把less处理成单独文件
     module: {

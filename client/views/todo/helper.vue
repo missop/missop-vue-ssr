@@ -3,16 +3,6 @@
         <span class="left">
             {{itemsLeft}} items left
         </span>
-        <span class="tabs">
-            <span
-                v-for="state in states"
-                :key="state"
-                :class="[state,filter===state?'actived':'']"
-                @click="toggleFilter(state)"
-            >
-                {{state}}
-            </span>
-        </span>
         <span class="clear"
               @click="clearAllCompleted"
         >clear Completed</span>
@@ -27,21 +17,7 @@
           required: true
         }
       },
-      data () {
-        return {
-          states: [
-            'All',
-            'active',
-            'completed'
-          ],
-          filter: 'All'
-        }
-      },
       methods: {
-        toggleFilter (state) {
-          this.filter = state
-          this.$emit('pull', state)
-        },
         clearAllCompleted () {
           this.$emit('clear')
         }

@@ -1,5 +1,11 @@
 <template>
   <section class="real-app">
+    <div class="tab-container">
+      <tabs :value="filter" @changeValue="activate">
+        <tab :index="tab" :label="tab" :key="tab"
+        v-for="tab in states"/>
+      </tabs>
+    </div>
     <input type="text"
            class="add-input"
            autofocus="autofocus"
@@ -10,15 +16,15 @@
       :todo="todo"
       :key="todo.id"
       @del="deleteTodo"/>
-    <Tabs :itemsLeft="filteredTodos.length"
-          @pull="getFilter"
-          @clear="clearCompleted"></Tabs>
-    <router-view/>
+    <Helper :itemsLeft="filteredTodos.length"
+          @clear="clearCompleted">
+    </Helper>
+    <!--<router-view/>-->
   </section>
 </template>
 
 <script>
-  import Tabs from './tables.vue'
+  import Helper from './helper.vue'
   import Item from './item.vue'
 
   let id = 0
@@ -26,7 +32,7 @@
     beforeRouteEnter (to, form, next) {
       console.log('todo before enter')
       next(vm => {
-        console.log('after enter vm.id is ' + vm.id)
+        console.log('beforeRouteEnter vm.page is ' + vm.page)
       })
     },
     beforeRouteUpdate (to, form, next) {
@@ -40,12 +46,17 @@
       }
     },
     props: [
-      'id'
+      'page'
     ],
     data () {
       return {
         todos: [],
-        filter: 'All'
+        filter: 'All',
+        states: [
+          'All',
+          'active',
+          'completed'
+        ]
       }
     },
     mounted () {
@@ -57,6 +68,8 @@
           return this.todos
         } else if (this.filter === 'completed') {
           return this.todos.filter(todo => todo.completed)
+        } else {
+          return this.todos.filter(todo => todo.activated)
         }
       }
     },
@@ -77,14 +90,18 @@
         this.todos.splice(this.todos.findIndex(todo => todo.id === id), 1)
       },
       getFilter (filter) {
+        console.log(filter)
         this.filter = filter
       },
       clearCompleted () {
         this.todos = this.todos.filter(todo => !todo.completed)
+      },
+      activate (value) {
+        this.filter = value
       }
     },
     components: {
-      Tabs,
+      Helper,
       Item
     }
   }
@@ -108,13 +125,16 @@
     border: 0;
     outline: none;
     color: inherit;
-    padding: 6px;
-    border: 1px solid #999;
-    box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
     font-smoothing: antialiased;
     padding: 16px 16px 16px 60px;
     border: none;
     box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
+  }
+  .tab-container{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 15px;
+    background-color: #fff;
   }
 </style>

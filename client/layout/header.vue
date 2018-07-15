@@ -1,19 +1,19 @@
 <template>
-    <div :class="$style.mainHeader">
+    <div class="main-header">
         <h1>JTodo</h1>
     </div>
 </template>
 
 <script>
     export default {
-      name: 'header',
-      computed: {
+      name: 'vheader'
+      /* computed: {
         $style () {
           return {
             mainHeader: ''
           }
         }
-      }
+      } */
     }
 </script>
 

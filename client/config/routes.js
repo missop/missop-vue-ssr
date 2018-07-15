@@ -5,12 +5,9 @@ export default [
     redirect: '/app'
   },
   {
-    path: '/app/:id',
+    path: '/app',
     props: true,
-    components: {
-      default: () => import('../views/todo/todo.vue')
-    },
-    name: 'app',
+    component: () => import('../views/todo/todo.vue'),
     meta: {
       title: 'this is app',
       description: 'all app'
