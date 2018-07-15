@@ -455,12 +455,17 @@ tabs:provide () {
 tab:inject:['value']
 ```
 <br>provide无法响应式？
-5. props不要在组件内部修改
+<br>
+5. props不要在组件内部修
+<br>改
+<br>
 6. 内容区域如何显示？
 <br>用一个数组存储所有的插槽,tabs中读取插槽的内容放到content中去
+<br>
 7. slot的数据不能响应式变化
 <br>它会去判断props和data是否变化来决定是否重新渲染，而插槽变化并不会导致重新渲染
 <br>解决方法，把它作为组件独立出来，而不是全部都写在tabs中
+<br>
 8. 组件中的slots
 ```
 render(){return (<tabs><tab/></tabs>)}
