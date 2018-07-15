@@ -368,7 +368,7 @@ vuex等等单独打包出来，直接require即可，这里就是设置不打包
 ### 生成不重复的id---添加到DOM上---计算高度---定时删除元素
 ### 核心技能：使用js来扩展vue组件，删除组件
 1. 创建vue文件作为初始文件，写一些固定的样式（后面要拿这个去extends内容）
-2. ![image text](../study-pics/1.jpg)
+2. 
 3. 先把它注册成全局组件：
 <br>notification.vue + index.js(Vue.component(name,Component)) + create-app.js(Vue.use(这里导入的是js文件))
 4. did you register the component correctly? For recursive components, make sure to provide the "name" option.
@@ -391,7 +391,7 @@ vuex等等单独打包出来，直接require即可，这里就是设置不打包
 7. 动态的属性怎么加？
 <br>:style=style
 8. computed声明变量与data声明变量有何区别？
-<br>
+<br>响应式的差别
 9. 所有用到的变量都要现在.vue中声明
 10. 实例化的时候传入参数(vue中接收的props)
 ```
@@ -436,7 +436,31 @@ const {
 <br>transition的after-enter事件的触发：如果没有显示隐藏的变化就不会触发，所以赋值不成功（visible没有变化）
 
 ## 1.2 tab组件复盘
-### 核心问题： 将tab组件插入到tabs组件中，使用插槽来显示文本,tabs上的value来决定activate哪一个
+### 核心问题： 将tab组件插入到tabs组件中，使用插槽来显示文本,tabs上的value来决定active
+### 核心技能： jsx语法，jsx中变量用大括号（注意不是双大括号）
+### 核心障碍：tab栏头部内容的显示，tab栏内容区域的显示
+1. tabs组件
+<br>tabs里面的内容是作为插槽放进去的(this.$slots.default)
+2. tab组件
+<br>li中的内容也是通过获取插槽上的属性得到的
+3. render func中不要写template标签，否则渲染不出来
+4. 子组件访问父组件的值:this.$parent.value
+<br>注意：只能访问上面一层的值，无法访问所有祖先元素，类似于$().parent()
+```
+tabs:provide () {
+    return {
+        value: this.value
+    }
+}
+tab:inject:['value']
+```
+<br>provide无法响应式？
+5. props不要在组件内部修改
+6. 内容区域如何显示？
+<br>用一个数组存储所有的插槽,tabs中读取插槽的内容放到content中去
+7. slot的数据不能响应式变化
+<br>它会去判断props和data是否变化来决定是否重新渲染，而插槽变化并不会导致重新渲染
+<br>解决方法，把它作为组件独立出来，而不是全部都写在tabs中
 
 
 

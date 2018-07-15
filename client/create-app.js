@@ -7,9 +7,7 @@ import App from './App.vue'
 import createStore from './store/store'
 import createRouter from './config/index'
 
-// import Notification from './components/notification'
-
-import Notify from './components/notify'
+import Notification from './components/notification'
 
 import Tabs from './components/tabs/index'
 
@@ -19,8 +17,7 @@ Vue.use(VueRouter)
 Vue.use(Vuex)
 Vue.use(Meta)
 
-// Vue.use(Notification)
-Vue.use(Notify)
+Vue.use(Notification)
 
 Vue.use(Tabs)
 
