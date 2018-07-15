@@ -15,6 +15,9 @@
         tabsItem: []
       }
     },
+    mounted() {
+      console.log(this.$slots.default)
+    },
     render() {
       return (
         <div class="tabs">
