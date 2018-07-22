@@ -30,15 +30,61 @@ module.exports = (appId, appKey) => {
     const now = Date.now()
     return {
       'x-APICloud-AppId': appId,
-      'X-APIClod-AppKey': `${sha1(`${appId}UZ${appKey}UZ${now}`)}.${now}`
+      'X-APICloud-AppKey': `${sha1(`${appId}UZ${appKey}UZ${now}`)}.${now}`
     }
   }
   return {
+    // 查询
     async getAllTodos() {
       return handleRequest(
-        await request.get(`/${className}`, {
-          headers: getHeaders()
-        })
+        await request.get(
+          `/${className}`, {
+            headers: getHeaders()
+          })
+      )
+    },
+    // 创建
+    async addTodo(todo) {
+      return handleRequest(
+        await request.post(
+          `/${className}`,
+          todo,
+          {headers: getHeaders()}
+        )
+      )
+    },
+    // 更新
+    async updateTodo(id, todo) {
+      return handleRequest(
+        await request.put(
+          `/${className}/${id}`,
+          todo,
+          {headers: getHeaders()}
+        )
+      )
+    },
+    // 删除
+    async deleteTodo(id) {
+      return handleRequest(
+        await request.delete(
+          `/${className}/${id}`,
+          {headers: getHeaders()}
+        ))
+    },
+    // 批量删除
+    async deleteCompleted(ids) {
+      const requests = ids.map(id => {
+        return {
+          method: 'DELETE',
+          path: `/mcm/api/${className}/${id}`
+        }
+      })
+      return handleRequest(
+        await request.post(
+          '/batch',
+          {requests},
+          {headers: getHeaders()}
+        )
       )
     }
   }

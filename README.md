@@ -473,6 +473,65 @@ tabs:this.$slots.default=>tab的vnode对象
 ```
 
 
+终极项目开发
+--
+### 服务端请求API
+1. APICloud
+<br>数据存储在云端数据库APICloud
+2. 路由前缀
+```
+// 增加路由前缀
+const apiRouter = new Router({prefix: '/api'})
+```
+3. sha1
+<br>生成线上数据库签名
+4. baseUrl指定
+```
+const request = axios.create({
+  baseURL: 'https://d.apicloud.com/mcm/api'
+})
+```
+完整的url是baseURL+GET方法后面的url
+5. 每一个请求都需要一个包含appId和appKey的头？
+```
+const getHeaders = () => {
+    const now = Date.now()
+    return {
+      'x-APICloud-AppId': appId,
+      'X-APIClod-AppKey': `${sha1(`${appId}UZ${appKey}UZ${now}`)}.${now}`
+    }
+  }
+```
+6. 固定请求结果的格式
+```
+const successResponse = (data) => {
+  return {
+    success: true,
+    data
+  }
+}
+```
+7. restlet Client测试请求
+8. deleteCompleted方法
+<br>批量处理，是自定义的，并没有直接用的方法
+9. koa-body
+<br>app.use(koaBody())这样才能把put的body中的数据添加上去
+10. koa-session
+<br>设置session记录登陆状态
+```
+app.keys = ['vue ssr tech']
+app.use(koaSession({
+  key: 'v-ssr-id',
+  maxAge: 2 * 60 * 60 * 1000 //过期时间
+}, app))
+```
+11. app.use(fn)之后fn在所有请求中都能调用
+
+### 客户端登录API
+#### login页面
+1. 防止自动填充密码(input autocomplete="new-password")
+#### 
+
 
 
 

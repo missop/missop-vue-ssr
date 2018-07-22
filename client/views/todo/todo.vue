@@ -3,7 +3,7 @@
     <div class="tab-container">
       <tabs :value="filter" @changeValue="activate">
         <tab :index="tab" :label="tab" :key="tab"
-        v-for="tab in states"/>
+             v-for="tab in states"/>
       </tabs>
     </div>
     <input type="text"
@@ -17,7 +17,7 @@
       :key="todo.id"
       @del="deleteTodo"/>
     <Helper :itemsLeft="filteredTodos.length"
-          @clear="clearCompleted">
+            @clear="clearCompleted">
     </Helper>
     <!--<router-view/>-->
   </section>
@@ -26,20 +26,21 @@
 <script>
   import Helper from './helper.vue'
   import Item from './item.vue'
+  import {mapActions} from 'vuex'
 
   let id = 0
   export default {
-    beforeRouteEnter (to, form, next) {
+    beforeRouteEnter(to, form, next) {
       console.log('todo before enter')
       next(vm => {
         console.log('beforeRouteEnter vm.page is ' + vm.page)
       })
     },
-    beforeRouteUpdate (to, form, next) {
+    beforeRouteUpdate(to, form, next) {
       console.log('todo route update')
       next()
     },
-    beforeRouteLeave (to, form, next) {
+    beforeRouteLeave(to, form, next) {
       console.log('before route enter')
       if (global.confirm('are you sure to leave?')) {
         next()
@@ -48,7 +49,7 @@
     props: [
       'page'
     ],
-    data () {
+    data() {
       return {
         todos: [],
         filter: 'All',
@@ -59,11 +60,12 @@
         ]
       }
     },
-    mounted () {
+    mounted() {
       console.log(this.id)
+      this.fetchTodos()
     },
     computed: {
-      filteredTodos () {
+      filteredTodos() {
         if (this.filter === 'All') {
           return this.todos
         } else if (this.filter === 'completed') {
@@ -74,7 +76,8 @@
       }
     },
     methods: {
-      addTodo (e) {
+      ...mapActions(['fetchTodos']),
+      addTodo(e) {
         const content = e.target.value.trim()
         if (!content) {
           return
@@ -86,17 +89,17 @@
         })
         e.target.value = ''
       },
-      deleteTodo (id) {
+      deleteTodo(id) {
         this.todos.splice(this.todos.findIndex(todo => todo.id === id), 1)
       },
-      getFilter (filter) {
+      getFilter(filter) {
         console.log(filter)
         this.filter = filter
       },
-      clearCompleted () {
+      clearCompleted() {
         this.todos = this.todos.filter(todo => !todo.completed)
       },
-      activate (value) {
+      activate(value) {
         this.filter = value
       }
     },
@@ -131,7 +134,8 @@
     border: none;
     box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
   }
-  .tab-container{
+
+  .tab-container {
     width: 100%;
     box-sizing: border-box;
     padding: 0 15px;
