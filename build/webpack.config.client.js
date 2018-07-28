@@ -16,8 +16,9 @@ const devServer = {
     errors: true
   },
   headers: {'Access-Control-Allow-Origin': '*'},
+  contentBase: './public',
   historyApiFallback: {
-    index: '/public/index.html'
+    index: '/index.html'
   },
   proxy:{
     '/api': 'http://127.0.0.1:3333',

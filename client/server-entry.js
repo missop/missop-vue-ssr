@@ -11,6 +11,15 @@ export default context => {
       if (!matchedComponents.length) {
         return reject(new Error('no components matched'))
       }
+      Promise.all(matchedComponents.map(Component => {
+          if (Component.asyncData) {
+            return Component.asyncData({
+              route: router.currentRoute,
+              store
+            })
+          }
+        })
+      ).then(data => console.log(data))
       context.meta = app.$meta()
       resolve(app)
     })

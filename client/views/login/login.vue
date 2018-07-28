@@ -22,6 +22,8 @@
 </template>
 
 <script>
+  import {mapActions} from 'vuex'
+
   export default {
     name: 'login',
     data() {
@@ -32,10 +34,18 @@
       }
     },
     methods: {
+      ...mapActions(['login']),
       doSubmit(e) {
         e.preventDefault()
-        if(this.validate()){
-        //调用接口
+        if (this.validate()) {
+          //调用接口
+          this.login({
+            username: this.username,
+            password: this.password
+          })
+            .then(() => {
+              this.$router.replace('/app')
+            })
         }
       },
       validate() {
@@ -63,9 +73,20 @@
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;
+    &:hover {
+      background-color: #fff;
+    }
     h1 {
       font-weight: 100;
-      color: #3d3d3d
+      color: #3d3d3d;
+      &:hover{
+        background-color: transparent;
+        color: #000;
+      }
+      span:hover{
+        background-color: transparent;
+        color: #000;
+      }
     }
   }
 
@@ -77,7 +98,13 @@
     border: 1px solid #aaa;
     width: 100%;
     border-radius: 0;
-    box-shadow: 0 0 0
+    box-shadow: 0 0 0;
+    outline: none;
+    box-sizing: border-box;
+    &:hover {
+      background-color: #fff;
+      color: #000;
+    }
   }
 
   .login-btn {

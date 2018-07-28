@@ -529,8 +529,45 @@ app.use(koaSession({
 
 ### 客户端登录API
 #### login页面
-1. 防止自动填充密码(input autocomplete="new-password")
-#### 
+<br>防止自动填充密码(input autocomplete="new-password")
+#### 调试第一个api
+1. client-model(封装请求方法（类似于后端）handleRequest)=>封装错误处理(util)
+=>暴露第一个get请求获取todo列表
+2. actions(执行请求，并将数据传递给mutations改变state)=>todo中执行这个actions
+3. 由于服务端是3333端口，与客户端8000端口号不同，存在跨域问题，所以需要设置proxy
+```
+devServer中的配置项
+proxy:{
+    '/api': 'http://127.0.0.1:3333',
+    '/user': 'http://127.0.0.1:3333'
+  },
+```
+#### 错误处理
+1. 401错误处理（需要提示登录，并跳转至/login）
+```
+问题：无法找到对应的router实现跳转
+解决办法：利用Vue事件机制，实例化一个vue对象并向上发送一个事件，这时在client-entry中去监听
+发送事件和监听都是实例化的那个vue
+bus.$on('auth', () => {
+  router.push('/login')
+})
+```
+2. 为什么login要返回一个promise对象？？？
+<br>因为在请求成功之后需要执行一个跳转，相当于一个回调函数
+3. request.body一直为空？？？
+```
+client-model中的参数没有传到post方法中
+ login(username, password) {
+    return handleRequest(request.post('/user/login', {username, password}))
+  },
+```
+#### 联调所有api
+1. 之前使用v-model获取input中的值，现在不行了
+<br>现在这个值需要存储在store中，而store中的值不能在外部随意更改
+2. 选择框的选中不能自动修改，需要通过状态来判断(点击时阻止默认事件)
+
+
+
 
 
 

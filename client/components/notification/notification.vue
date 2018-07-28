@@ -63,6 +63,7 @@
     transition: all .3s;
     .content{
       padding: 0;
+      color: #ccc;
     }
     .btn{
       color: #ff4081;

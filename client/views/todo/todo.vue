@@ -10,14 +10,15 @@
            class="add-input"
            autofocus="autofocus"
            placeholder="接下去要做什么？"
-           @keyup.enter="addTodo">
+           @keyup.enter="handleAdd">
     <Item
       v-for="todo in filteredTodos"
       :todo="todo"
       :key="todo.id"
-      @del="deleteTodo"/>
+      @del="deleteTodo"
+      @toggle="handleToggleState"/>
     <Helper :itemsLeft="filteredTodos.length"
-            @clear="clearCompleted">
+            @clear="clearAllCompleted">
     </Helper>
     <!--<router-view/>-->
   </section>
@@ -26,7 +27,7 @@
 <script>
   import Helper from './helper.vue'
   import Item from './item.vue'
-  import {mapActions} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
 
   let id = 0
   export default {
@@ -42,16 +43,15 @@
     },
     beforeRouteLeave(to, form, next) {
       console.log('before route enter')
-      if (global.confirm('are you sure to leave?')) {
+      /*if (global.confirm('are you sure to leave?')) {
         next()
-      }
+      }*/
     },
     props: [
       'page'
     ],
     data() {
       return {
-        todos: [],
         filter: 'All',
         states: [
           'All',
@@ -64,7 +64,17 @@
       console.log(this.id)
       this.fetchTodos()
     },
+    asyncData() {
+      return new Promise(
+        resolve => {
+          setTimeout(() => {
+            resolve(123)
+          }, 1000)
+        }
+      )
+    },
     computed: {
+      ...mapState(['todos']),
       filteredTodos() {
         if (this.filter === 'All') {
           return this.todos
@@ -76,28 +86,46 @@
       }
     },
     methods: {
-      ...mapActions(['fetchTodos']),
-      addTodo(e) {
+      ...mapActions([
+        'fetchTodos',
+        'addTodo',
+        'updateTodo',
+        'deleteTodo',
+        'deleteAllCompleted'
+      ]),
+      handleAdd(e) {
         const content = e.target.value.trim()
         if (!content) {
+          this.$notify({
+            content: '内容不能为空'
+          })
           return
         }
-        this.todos.unshift({
-          id: id++,
-          content: content,
+        const todo = {
+          content,
           completed: false
-        })
+        }
+        this.addTodo(todo)
         e.target.value = ''
       },
-      deleteTodo(id) {
-        this.todos.splice(this.todos.findIndex(todo => todo.id === id), 1)
+      /* deleteTodo(id) {
+         this.todos.splice(this.todos.findIndex(todo => todo.id === id), 1)
+       },*/
+      handleToggleState(todo) {
+        this.updateTodo({
+          id: todo.id,
+          todo: Object.assign({}, todo, {
+            completed: !todo.completed
+          })
+        })
       },
       getFilter(filter) {
         console.log(filter)
         this.filter = filter
       },
-      clearCompleted() {
-        this.todos = this.todos.filter(todo => !todo.completed)
+      clearAllCompleted() {
+        // this.todos = this.todos.filter(todo => !todo.completed)
+        this.deleteAllCompleted()
       },
       activate(value) {
         this.filter = value

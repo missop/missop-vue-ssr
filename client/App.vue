@@ -1,6 +1,9 @@
 <template>
   <div id="app">
     <div id="cover"></div>
+    <div id="loading" v-show="loading">
+      <loading></loading>
+    </div>
     <v-header></v-header>
     <router-view/>
     <button @click="addNotice" class="botice-btn">add notice</button>
@@ -12,22 +15,25 @@
 <script>
   import vHeader from './layout/header.vue'
   import vFooter from './layout/footer.jsx'
-  // import {mapState, mapGetters} from 'vuex'
+  import loading from './components/loading/loading.vue'
+  import {mapState} from 'vuex'
+
   export default {
     metaInfo: {
       title: 'Todo App'
     },
     components: {
       vHeader,
-      vFooter
+      vFooter,
+      loading
     },
-    mounted () {
+    mounted() {
       /* this.$store.dispatch('updateCountAsync', 'bns')
         // this['a/updateText']('123')
         // this['a/add']() */
     },
     methods: {
-       addNotice () {
+      addNotice() {
         this.$notify({
           content: 'test $notify',
           btn: 'close'
@@ -46,7 +52,8 @@
         // newTextA: ['a/newTextA'],
         // newTest: ['a/aChild/newTest']
       }), */
-      fullName () {
+      ...mapState(['loading']),
+      fullName() {
         return this.$store.getters.fullName
       }
     }
@@ -71,6 +78,19 @@
     background-color: #999;
     opacity: .9;
     z-index: -1;
+  }
+
+  #loading {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, .3);
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
 </style>
