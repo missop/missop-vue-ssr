@@ -11,6 +11,7 @@ export default context => {
       if (!matchedComponents.length) {
         return reject(new Error('no components matched'))
       }
+      console.log(1);
       Promise.all(matchedComponents.map(Component => {
           if (Component.asyncData) {
             return Component.asyncData({

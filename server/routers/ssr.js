@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const serverRender = require('./server-render')
 
-const clientManifest = require('../../public/vue-ssr-client-manifest.json')
+const clientManifest = require('../../public/vue-ssr-client-manifest')
 const renderer = VueServerRender.createBundleRenderer(
   path.join(__dirname, '../../server-build/vue-ssr-server-bundle.json'),
   {

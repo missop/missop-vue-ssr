@@ -1,26 +1,57 @@
-vue-todo基础
+1.vue-todo基础
 --
-## 武器一阶：webpack的打包配置
-1. webpack打包分为entry、output、module三个部分，难点主要在于module部分，最重要的是它要把
-vue解析成浏览器能够识别的html展示出来，而使用vue-loader会报以下错误：(vue-loader v15版本以上)<br>
-2. vue-loader was used without the corresponding plugin. Make sure to include VueLoaderPlugin in your webpack config<br>
-3. 解决办法：var {VueLoaderPlugin}=require('vue-loader');plugins:new VueLoaderPlugin()<br>
-4. 问题根源：webpack版本问题，webpack4.0与3，0的不同，注意：仅仅只是把webpack的版本调低并不起作用，需要整个package.json根据
-旧版来进行配置<br>
+## 1.1 webpack的打包配置
+1. webpack = entry + output + module + plugins(可有可无，一般是有的)
+* entry:`path.join(__dirname, '../client/client-entry.js')`
+* output:filename(加hash值*.[hash:8].js)、path、publicPath
+* module:具体文件具体分析(编译)
+  * `vue文件:{test:'vue',loader:'vue-loader'}`
+  * `jsx文件:{test:'/\.jsx/',loader:'babel-loader'}`
+  * `js多了一个exclude:/node_modules/还是用babel编译`
+  * `图片:{loader:'url-loader',options:{limit:1024,name:'resources/[path][name].[hash:8].[ext]'}} 前面path,name指的是output这个文件`
+  * less在开发环境和生产环境（与服务端相似）配置不同
+    * `开发环境:vue-style-loader,css-loader,less-loader,postcss-loader(options:{sourceMap:true})`
+    * `生产环境打包分离css:ExtractPlugin(extract-text-webpack-plugin).extract({fallback:'vue-style-loader'})其他相同`
+2. devServer配置
+* 基础配置
+  * `{port:'8000',host:'0.0.0.0',overlay:{errors:true}(错误显示在html上),hot:true}`
+* 附加配置
+  * `headers:{'Access-Control-Allow-Origin':*}允许跨域请求`
+  * `historyApiFallback: {index: '/public/index.html'}把html的解析地址放到public下面，与base中的output地址对应`
+  * `proxy:{'/api': 'http://127.0.0.1:3333','/user': 'http://127.0.0.1:3333'}把接口代理到服务端地址下面，这样就可以请求服务端数据了`
+3. plugins
+* 共有的
+  * `webpack.DefinePlugin('process.env': {NODE_DEV: isDev ? '"development"' : '"production"'})配置全局标识，可以直接在indexjs中使用此变量,相当于整个项目全局变量`
+  * `html-webpack-plugin:HTMLPlugin({template:path.join(__dirname,'template.html')})将编译后的html注入到template中`
+  * `vue-server-renderer/client-plugin:服务端渲染插件，用于生成json文件`
+* 其他插件需要分为dev和pro
+  * dev(都包含在webpack模块中)
+    * `new webpack.HotModuleReplacementPlugin()热加载`
+    * `new webpack.NoEmitOnErrorsPlugin()`
+  * pro
+    * `new ExtractPlugin('styles.[contentHash:8].css')(css添加hash值)`
+    * `optimization.splitChunks公共配置提取`
+4. vue-loader会报以下错误：(vue-loader v15版本以上)<br>
+```
+vue-loader was used without the corresponding plugin. Make sure to include VueLoaderPlugin in your webpack config
 
+解决办法：var {VueLoaderPlugin}=require('vue-loader');plugins:new VueLoaderPlugin()
+问题根源：webpack版本问题，webpack4.0与3，0的不同，注意：仅仅只是把webpack的版本调低并不起作用，需要整个package.json根据
+旧版来进行配置
+```
 
-## 武器二阶：webpack的本地运行配置
+## 1.2 webpack的本地运行配置
 1. 首先在package.json中有两个命令，一个是生产环境用的：<br>
 "build": "cross-env NODE_ENV=production webpack --config webpack.conf.js"<br>
 一个是开发环境用的："dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.conf.js"<br>
 2. 根据process.env.NODE_ENV这个变量来判断是生产环境还是开发环境，开发环境需要热加载(new webpack.HotModuleReplacementPlugin())和监听服务器<br>
 3. 然后就成功地开启了页面
 
-## 为什么要在vue中使用jsx
+## 1.3 为什么要在vue中使用jsx
 1. jsx是js的预处理语言,它能够实现js与html融为一体，更为简洁
 2. 如何使用jsx：webpack.conf.js=>加入babel-loader=>.babelrc加入babel-plugin-transform-vue-jsx插件
 
-## 生产环境打包分离css,js
+## 1.4 生产环境打包分离css,js
 1. 使用less-loader打包之后默认是用js添加style标签和样式内容来实现css的打包
 2. 我们想要单独把css打包成一个文件=>extract-text-webpack-plugin插件
 3. 生产环境和开发环境的要求不同所以需要判断之后动态地添加配置文件
@@ -31,20 +62,20 @@ postcss.config.js
 less-loader
 7. 处理出来的文件没有后缀：[name].[chunkHash:8).js这里少了一个]
 
-## 小知识
+## 1.5 小知识
 1. v-for循环之后用:key来保存循环结果，这样如果相同的话会复用之前的key,避免再次循环
 2. 如果没有使用vuex的话尽量把数据声明在顶层组件上面(不是app.vue,是指用到这几个数据的顶层组件)
 3. 父组件响应子组件中的事件，需要子组件通过$emit传递事件以及参数，然后父组件@事件名来接收
 4. Array.prototype.findIndex(callback[,this Arg]),
 callback=function(element,index,array){}
 
-## 汇总
+## 1.6 汇总
 config.entry=>config.output.filename=>config.module.rules=>config.plugins
 ### webpack配置问题
 1. /public才能打开应用，而且router-view不显示
 
 
-vue-ssr进阶
+2.vue-ssr进阶
 --
 ## 武器三阶 修改webpack配置
 1. webpack的配置全部放在build文件下,
