@@ -41,11 +41,13 @@ vue-loader was used without the corresponding plugin. Make sure to include VueLo
 ```
 
 ## 1.2 webpack的本地运行配置
-1. 首先在package.json中有两个命令，一个是生产环境用的：<br>
-"build": "cross-env NODE_ENV=production webpack --config webpack.conf.js"<br>
-一个是开发环境用的："dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.conf.js"<br>
-2. 根据process.env.NODE_ENV这个变量来判断是生产环境还是开发环境，开发环境需要热加载(new webpack.HotModuleReplacementPlugin())和监听服务器<br>
-3. 然后就成功地开启了页面
+1. npm命令的配置
+* `"dev":"cross-env NODE_ENV=development webpack-dev-server --config webpack.conf.js"`
+* `"build":"cross-env NODE_ENV=production webpack-dev-server --config webpack.conf.js"`
+2. cross-env的意义----获取process.env.NODE_ENV的值
+* `new webpack.DefinePlugin({'process.env.NODE_ENV': JSON.stringify('production')})=>客户端获取到值，服务端（webpack服务器获取不到值）`
+* `cross-env NODE_ENV=development=>客户端获取不到而服务端获取得到`
+* 将两者结合即可
 
 ## 1.3 为什么要在vue中使用jsx
 1. jsx是js的预处理语言,它能够实现js与html融为一体，更为简洁
