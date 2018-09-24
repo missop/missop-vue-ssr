@@ -15,13 +15,14 @@ const config = require('../app.config')
 const db = createDb(config.db.appId, config.db.appKey)
 const userRouter = require('./routers/user')
 
-const isDev = process.env.NODE_DEV === 'development'
-
 app.keys = ['vue ssr tech']
 app.use(koaSession({
   key: 'v-ssr-id',
   maxAge: 2 * 60 * 60 * 1000
 }, app))
+
+const isDev = process.env.NODE_DEV === 'development'
+console.log(process.env.NODE_DEV)
 
 app.use(async (ctx, next) => {
   try {
@@ -57,6 +58,7 @@ app.use(staticRouter.routes()).use(staticRouter.allowedMethods())
 app.use(apiRouter.routes()).use(apiRouter.allowedMethods())
 
 let pageRouter
+// isDev==false导致直接引入打包后的文件
 if (isDev) {
   pageRouter = require('./routers/dev-ssr')
 } else {

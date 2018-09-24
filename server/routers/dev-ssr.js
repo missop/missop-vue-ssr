@@ -11,6 +11,7 @@ const serverConfig = require('../../build/webpack.config.server')
 
 const serverCompiler = webpack(serverConfig)
 const mfs = new MemoryFS()
+console.log('c');
 //指定输出目录在memoryfs中
 serverCompiler.outputFileSystem = mfs
 
@@ -21,7 +22,7 @@ serverCompiler.watch({}, (err, stats) => {
   stats = stats.toJson()
   //eslint的错误或者其他错误不会在err中,会在stats中出现
   stats.errors.forEach(err => console.warn(err))
-  stats.warnings.forEach(err => console.warn(err))
+  stats.warnings.forEach(warn => console.warn(err))
 
   const bundlePath = path.join(
     serverConfig.output.path,
